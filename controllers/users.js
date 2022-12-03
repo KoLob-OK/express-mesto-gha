@@ -29,9 +29,9 @@ const getUser = async (req, res) => {
       return;
     }
     res.status(200).send(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+  } catch (e) {
+    console.error(e);
+    res.status(400).send({ message: 'Ошибка. Введен некорректный Id пользователя' });
   }
 };
 

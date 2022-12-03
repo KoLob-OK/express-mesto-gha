@@ -51,8 +51,46 @@ const deleteCard = async (req, res) => {
   }
 };
 
+// лайк карточки
+const likeCard = async (req, res) => {
+  // eslint-disable-next-line no-console
+  console.log('likeCard');
+  const { cardId } = req.params;
+  const ownerId = req.user._id;
+  try {
+    const card = await Card.findByIdAndUpdate(
+      cardId,
+      { $addToSet: { likes: ownerId } }, // добавить _id в массив, если его там нет
+      { new: true },
+    );
+    res.status(201).send(card);
+  } catch (err) {
+    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+  }
+};
+
+// удаление лайка карточки
+const deleteLike = async (req, res) => {
+  // eslint-disable-next-line no-console
+  console.log('deleteLike');
+  const { cardId } = req.params;
+  const ownerId = req.user._id;
+  try {
+    const card = await Card.findByIdAndUpdate(
+      cardId,
+      { $pull: { likes: ownerId } }, // убрать _id из массива
+      { new: true },
+    );
+    res.status(200).send(card);
+  } catch (err) {
+    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+  }
+};
+
 module.exports = {
   getAllCards,
   createCard,
   deleteCard,
+  likeCard,
+  deleteLike,
 };

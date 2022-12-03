@@ -44,10 +44,11 @@ const createUser = async (req, res) => {
   console.log({ name, about, avatar });
   try {
     const user = await User.create({ name, about, avatar });
-    res.status(201).send(user);
-  } catch (err) {
-    console.error(err);
-    res.status(400).send({ message: 'Ошибка при создании пользователя' });
+    return res.status(201).send(user);
+  } catch (e) {
+    console.error(e);
+    const errors = Object.values(e.errors).map((err) => err.message);
+    return res.status(400).send({ message: errors.join(', ') });
   }
 };
 

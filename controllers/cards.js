@@ -26,9 +26,11 @@ const createCard = async (req, res) => {
     const card = await Card.create({ name, link, owner: ownerId });
     // eslint-disable-next-line no-console
     console.log(card);
-    res.status(200).send(card);
-  } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+    return res.status(201).send(card);
+  } catch (e) {
+    console.error(e);
+    const errors = Object.values(e.errors).map((err) => err.message);
+    return res.status(400).send({ message: errors.join(', ') });
   }
 };
 

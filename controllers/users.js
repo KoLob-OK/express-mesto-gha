@@ -14,6 +14,7 @@ const getAllUsers = async (req, res) => {
     console.log(users);
     res.status(200).send(users);
   } catch (err) {
+    console.error(err);
     res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
   }
 };
@@ -29,6 +30,7 @@ const getUser = async (req, res) => {
     }
     res.status(200).send(user);
   } catch (err) {
+    console.error(err);
     res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
   }
 };
@@ -42,9 +44,10 @@ const createUser = async (req, res) => {
   console.log({ name, about, avatar });
   try {
     const user = await User.create({ name, about, avatar });
-    res.status(200).send(user);
+    res.status(201).send(user);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+    console.error(err);
+    res.status(400).send({ message: 'Ошибка при создании пользователя' });
   }
 };
 

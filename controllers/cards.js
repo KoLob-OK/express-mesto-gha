@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { handleError } = require('../errors/handleError');
 
 // получение всех карточек
 const getAllCards = async (req, res) => {
@@ -12,7 +13,7 @@ const getAllCards = async (req, res) => {
     }
     res.status(200).send(cards);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+    handleError(err, res);
   }
 };
 
@@ -26,11 +27,9 @@ const createCard = async (req, res) => {
     const card = await Card.create({ name, link, owner: ownerId });
     // eslint-disable-next-line no-console
     console.log(card);
-    return res.status(201).send(card);
-  } catch (e) {
-    console.error(e);
-    const errors = Object.values(e.errors).map((err) => err.message);
-    return res.status(400).send({ message: errors.join(', ') });
+    res.status(201).send(card);
+  } catch (err) {
+    handleError(err, res);
   }
 };
 
@@ -47,7 +46,7 @@ const deleteCard = async (req, res) => {
     }
     res.status(200).send(card);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+    handleError(err, res);
   }
 };
 
@@ -65,7 +64,7 @@ const likeCard = async (req, res) => {
     );
     res.status(201).send(card);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+    handleError(err, res);
   }
 };
 
@@ -83,7 +82,7 @@ const deleteLike = async (req, res) => {
     );
     res.status(200).send(card);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка при обработке внутри сервера' });
+    handleError(err, res);
   }
 };
 

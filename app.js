@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // временное решение авторизации
 app.use((req, res, next) => {
   req.user = {
-    _id: '6388aeb7d8868c4e0f588c94',
+    _id: '638b9d12a110677f1c63cda9',
   };
 
   next();
@@ -23,12 +23,17 @@ app.use((req, res, next) => {
 
 app.use('/', users);
 app.use('/', cards);
+app.use((req, res) => res
+  .status(404)
+  .send({ message: 'Ошибка 404. Введен некорректный адрес' }));
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 }, () => {
+  // eslint-disable-next-line no-console
   console.log('Connected to MongoDB!');
   app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
     console.log(`App  listening on port ${PORT}`);
   });
 });

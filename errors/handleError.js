@@ -3,16 +3,16 @@ const ERROR_NOT_FOUND = 404;
 const ERROR_INTERNAL_SERVER = 500;
 
 const handleError = (err, res) => {
-  if (err.name === 'BadRequestError') {
+  if (err.name === 'BadRequestError' || err.name === 'ValidationError') {
     return res
       .status(ERROR_BAD_REQUEST)
       .send({ message: `Ошибка ${ERROR_BAD_REQUEST}. Некорректный запрос` });
   }
-  if (err.name === 'ValidationError') {
+  /*  if (err.name === 'ValidationError') {
     return res
       .status(ERROR_BAD_REQUEST)
       .send({ message: `Ошибка ${ERROR_BAD_REQUEST}. Введены некорректные данные` });
-  }
+  } */
   if (err.name === 'NotFoundError') {
     return res
       .status(ERROR_NOT_FOUND)

@@ -45,7 +45,7 @@ const deleteCard = async (req, res) => {
     return;
   }
   try {
-    const card = await Card.findByIdAndRemove(cardId);
+    const card = await Card.findByIdAndRemove(cardId, { new: true });
     if (!card) {
       res.status(404).send({ message: 'Ошибка. Карточка не найдена' });
       return;

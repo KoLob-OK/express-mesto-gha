@@ -8,12 +8,16 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
+const statusCode = {
+  notFound: 404,
+};
+
 app.use(express.json());
 
 // временное решение авторизации
 app.use((req, res, next) => {
   req.user = {
-    _id: '638c8b7cd3a5df155d78fee2',
+    _id: '638cb09f606b39b6002ad781',
   };
 
   next();
@@ -22,7 +26,7 @@ app.use((req, res, next) => {
 app.use('/users', users);
 app.use('/cards', cards);
 app.use((req, res) => res
-  .status(404)
+  .status(statusCode.notFound)
   .send({ message: 'Ошибка 404. Введен некорректный адрес' }));
 
 mongoose

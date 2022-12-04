@@ -1,12 +1,17 @@
 const Card = require('../models/card');
 const { handleError } = require('../errors/handleError');
 
+const statusCode = {
+  ok: 200,
+  created: 201,
+};
+
 // получение всех карточек
 const getAllCards = async (req, res) => {
   console.log('getAllCards');
   try {
-    const cards = await Card.find({});
-    res.send(cards);
+    const cards = await Card.find({}).populate('owner');
+    res.status(statusCode.ok).send(cards);
   } catch (err) {
     handleError(err, res);
   }
@@ -20,7 +25,7 @@ const createCard = async (req, res) => {
     const ownerId = req.user._id;
     const card = await Card.create({ name, link, owner: ownerId });
     console.log(card);
-    res.status(201).send(card);
+    res.status(statusCode.created).send(card);
   } catch (err) {
     handleError(err, res);
   }
@@ -31,14 +36,16 @@ const deleteCard = async (req, res) => {
   console.log('deleteCard');
   const { cardId } = req.params;
   try {
-    const card = await Card.findByIdAndRemove(cardId);
+    const card = await Card
+      .findByIdAndRemove(cardId)
+      .populate('owner');
     if (!card) {
       const err = new Error('Ошибка 404. Карточка не найдена');
       err.name = 'NotFoundError';
       handleError(err, res);
       return;
     }
-    res.send(card);
+    res.status(statusCode.ok).send(card);
   } catch (err) {
     handleError(err, res);
   }
@@ -50,18 +57,20 @@ const likeCard = async (req, res) => {
   const { cardId } = req.params;
   const ownerId = req.user._id;
   try {
-    const card = await Card.findByIdAndUpdate(
-      cardId,
-      { $addToSet: { likes: ownerId } }, // добавить _id в массив, если его там нет
-      { new: true },
-    );
+    const card = await Card
+      .findByIdAndUpdate(
+        cardId,
+        { $addToSet: { likes: ownerId } }, // добавить _id в массив, если его там нет
+        { new: true },
+      )
+      .populate(['owner', 'likes']);
     if (!card) {
       const err = new Error('Ошибка 404. Карточка не найдена');
       err.name = 'NotFoundError';
       handleError(err, res);
       return;
     }
-    res.send(card);
+    res.status(statusCode.ok).send(card);
   } catch (err) {
     handleError(err, res);
   }
@@ -73,18 +82,20 @@ const deleteLike = async (req, res) => {
   const { cardId } = req.params;
   const ownerId = req.user._id;
   try {
-    const card = await Card.findByIdAndUpdate(
-      cardId,
-      { $pull: { likes: ownerId } }, // убрать _id из массива
-      { new: true },
-    );
+    const card = await Card
+      .findByIdAndUpdate(
+        cardId,
+        { $pull: { likes: ownerId } }, // убрать _id из массива
+        { new: true },
+      )
+      .populate(['owner', 'likes']);
     if (!card) {
       const err = new Error('Ошибка 404. Карточка не найдена');
       err.name = 'NotFoundError';
       handleError(err, res);
       return;
     }
-    res.send(card);
+    res.status(statusCode.ok).send(card);
   } catch (err) {
     handleError(err, res);
   }

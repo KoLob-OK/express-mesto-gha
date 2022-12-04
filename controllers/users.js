@@ -1,12 +1,17 @@
 const User = require('../models/user');
 const { handleError } = require('../errors/handleError');
 
+const statusCode = {
+  ok: 200,
+  created: 201,
+};
+
 // получение всех пользователей
 const getAllUsers = async (req, res) => {
   console.log('getAllUsers');
   try {
     const users = await User.find({});
-    res.send(users);
+    res.status(statusCode.ok).send(users);
   } catch (err) {
     handleError(err, res);
   }
@@ -24,7 +29,7 @@ const getUser = async (req, res) => {
       handleError(err, res);
       return;
     }
-    res.send(user);
+    res.status(statusCode.ok).send(user);
   } catch (err) {
     handleError(err, res);
   }
@@ -36,7 +41,7 @@ const createUser = async (req, res) => {
   const { name, about, avatar } = req.body;
   try {
     const user = await User.create({ name, about, avatar });
-    res.status(201).send(user);
+    res.status(statusCode.created).send(user);
   } catch (err) {
     handleError(err, res);
   }
@@ -56,7 +61,13 @@ const updateUser = async (req, res) => {
         runValidators: true,
       },
     );
-    res.send(user);
+    if (!user) {
+      const err = new Error('Ошибка 404. Пользователь не найден');
+      err.name = 'NotFoundError';
+      handleError(err, res);
+      return;
+    }
+    res.status(statusCode.ok).send(user);
   } catch (err) {
     handleError(err, res);
   }
@@ -76,7 +87,13 @@ const updateAvatar = async (req, res) => {
         runValidators: true,
       },
     );
-    res.send(user);
+    if (!user) {
+      const err = new Error('Ошибка 404. Пользователь не найден');
+      err.name = 'NotFoundError';
+      handleError(err, res);
+      return;
+    }
+    res.status(statusCode.ok).send(user);
   } catch (err) {
     handleError(err, res);
   }

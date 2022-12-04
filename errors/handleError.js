@@ -1,27 +1,33 @@
-const ERROR_BAD_REQUEST = 400;
-const ERROR_NOT_FOUND = 404;
-const ERROR_INTERNAL_SERVER = 500;
+const statusCode = {
+  ok: 200,
+  created: 201,
+  badRequest: 400,
+  unauthorized: 401,
+  forbidden: 403,
+  notFound: 404,
+  internalServerError: 500,
+};
 
 const handleError = (err, res) => {
   if (err.name === 'CastError') {
     return res
-      .status(ERROR_BAD_REQUEST)
-      .send({ message: `Ошибка ${ERROR_BAD_REQUEST}. Некорректный запрос` });
+      .status(statusCode.badRequest)
+      .send({ message: `Ошибка ${statusCode.badRequest}. Некорректный запрос` });
   }
   if (err.name === 'ValidationError') {
     return res
-      .status(ERROR_BAD_REQUEST)
-      .send({ message: `Ошибка ${ERROR_BAD_REQUEST}. Введены некорректные данные` });
+      .status(statusCode.badRequest)
+      .send({ message: `Ошибка ${statusCode.badRequest}. Введены некорректные данные` });
   }
   if (err.name === 'NotFoundError') {
     return res
-      .status(ERROR_NOT_FOUND)
+      .status(statusCode.notFound)
       .send({ message: err.message });
   }
 
   return res
-    .status(ERROR_INTERNAL_SERVER)
-    .send({ message: `Ошибка ${ERROR_INTERNAL_SERVER}. Произошла ошибка при обработке внутри сервера` });
+    .status(statusCode.internalServerError)
+    .send({ message: `Ошибка ${statusCode.internalServerError}. Произошла ошибка при обработке внутри сервера` });
 };
 
 module.exports = {

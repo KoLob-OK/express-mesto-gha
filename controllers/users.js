@@ -22,10 +22,16 @@ const getUser = async (req, res) => {
   // eslint-disable-next-line no-console
   console.log('getUser');
   const { userId } = req.params;
+  if (userId.length !== 24) {
+    const err = new Error('');
+    err.name = 'BadRequestError';
+    handleError(err, res);
+    return;
+  }
   try {
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ message: 'Ошибка. Пользователь не найден' });
+      res.status(404).send({ message: 'Ошибка 404. Пользователь не найден' });
       return;
     }
     res.status(200).send(user);

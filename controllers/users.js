@@ -8,7 +8,9 @@ const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({});
     if (users.length === 0) {
-      res.status(404).send({ message: 'Ошибка. Пользователи не найдены' });
+      const err = new Error('Ошибка 404. Пользователи не найдены');
+      err.name = 'NotFoundError';
+      handleError(err, res);
       return;
     }
     res.status(200).send(users);
@@ -31,7 +33,9 @@ const getUser = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      res.status(404).send({ message: 'Ошибка 404. Пользователь не найден' });
+      const err = new Error('Ошибка 404. Пользователь не найден');
+      err.name = 'NotFoundError';
+      handleError(err, res);
       return;
     }
     res.status(200).send(user);

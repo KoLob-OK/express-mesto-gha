@@ -8,7 +8,9 @@ const getAllCards = async (req, res) => {
   try {
     const cards = await Card.find({});
     if (cards.length === 0) {
-      res.status(404).send({ message: 'Ошибка. Карточки не найдены' });
+      const err = new Error('Ошибка 404. Карточки не найдены');
+      err.name = 'NotFoundError';
+      handleError(err, res);
       return;
     }
     res.status(200).send(cards);
@@ -47,7 +49,9 @@ const deleteCard = async (req, res) => {
   try {
     const card = await Card.findByIdAndRemove(cardId, { new: true });
     if (!card) {
-      res.status(404).send({ message: 'Ошибка. Карточка не найдена' });
+      const err = new Error('Ошибка 404. Карточка не найдена');
+      err.name = 'NotFoundError';
+      handleError(err, res);
       return;
     }
     res.status(200).send(card);
@@ -75,7 +79,9 @@ const likeCard = async (req, res) => {
       { new: true },
     );
     if (!card) {
-      res.status(404).send({ message: 'Ошибка 404. Карточка не найдена' });
+      const err = new Error('Ошибка 404. Карточка не найдена');
+      err.name = 'NotFoundError';
+      handleError(err, res);
       return;
     }
     res.status(201).send(card);
@@ -103,7 +109,9 @@ const deleteLike = async (req, res) => {
       { new: true },
     );
     if (!card) {
-      res.status(404).send({ message: 'Ошибка 404. Карточка не найдена' });
+      const err = new Error('Ошибка 404. Карточка не найдена');
+      err.name = 'NotFoundError';
+      handleError(err, res);
       return;
     }
     res.status(200).send(card);

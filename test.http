@@ -5,7 +5,7 @@ Accept: application/json
 ###
 
 // получить пользователя
-GET http://localhost:3000/users/6388aeb7d8868c4e0f588c94
+GET http://localhost:3000/users/6388aeb7d8868c4e0f588c9
 Accept: application/json
 
 ###

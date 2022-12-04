@@ -3,7 +3,7 @@ const ERROR_NOT_FOUND = 404;
 const ERROR_INTERNAL_SERVER = 500;
 
 const handleError = (err, res) => {
-  if (err.name === 'BadRequestError') {
+  if (err.name === 'CastError') {
     return res
       .status(ERROR_BAD_REQUEST)
       .send({ message: `Ошибка ${ERROR_BAD_REQUEST}. Некорректный запрос` });

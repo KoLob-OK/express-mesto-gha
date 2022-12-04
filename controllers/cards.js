@@ -3,17 +3,10 @@ const { handleError } = require('../errors/handleError');
 
 // получение всех карточек
 const getAllCards = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('getAllCards');
   try {
     const cards = await Card.find({});
-    if (cards.length === 0) {
-      const err = new Error('Ошибка 404. Карточки не найдены');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
-    }
-    res.status(200).send(cards);
+    res.send(cards);
   } catch (err) {
     handleError(err, res);
   }
@@ -21,13 +14,11 @@ const getAllCards = async (req, res) => {
 
 // создание карточки
 const createCard = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('createCard');
   const { name, link } = req.body;
   try {
     const ownerId = req.user._id;
     const card = await Card.create({ name, link, owner: ownerId });
-    // eslint-disable-next-line no-console
     console.log(card);
     res.status(201).send(card);
   } catch (err) {
@@ -37,24 +28,17 @@ const createCard = async (req, res) => {
 
 // удаление карточки
 const deleteCard = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('deleteCard');
   const { cardId } = req.params;
-  if (cardId.length !== 24) {
-    const err = new Error('');
-    err.name = 'BadRequestError';
-    handleError(err, res);
-    return;
-  }
   try {
-    const card = await Card.findByIdAndRemove(cardId, { new: true });
+    const card = await Card.findByIdAndRemove(cardId);
     if (!card) {
       const err = new Error('Ошибка 404. Карточка не найдена');
       err.name = 'NotFoundError';
       handleError(err, res);
       return;
     }
-    res.status(200).send(card);
+    res.send(card);
   } catch (err) {
     handleError(err, res);
   }
@@ -62,15 +46,8 @@ const deleteCard = async (req, res) => {
 
 // лайк карточки
 const likeCard = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('likeCard');
   const { cardId } = req.params;
-  if (cardId.length !== 24) {
-    const err = new Error('');
-    err.name = 'BadRequestError';
-    handleError(err, res);
-    return;
-  }
   const ownerId = req.user._id;
   try {
     const card = await Card.findByIdAndUpdate(
@@ -84,7 +61,7 @@ const likeCard = async (req, res) => {
       handleError(err, res);
       return;
     }
-    res.status(201).send(card);
+    res.send(card);
   } catch (err) {
     handleError(err, res);
   }
@@ -92,15 +69,8 @@ const likeCard = async (req, res) => {
 
 // удаление лайка карточки
 const deleteLike = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('deleteLike');
   const { cardId } = req.params;
-  if (cardId.length !== 24) {
-    const err = new Error('');
-    err.name = 'BadRequestError';
-    handleError(err, res);
-    return;
-  }
   const ownerId = req.user._id;
   try {
     const card = await Card.findByIdAndUpdate(
@@ -114,7 +84,7 @@ const deleteLike = async (req, res) => {
       handleError(err, res);
       return;
     }
-    res.status(200).send(card);
+    res.send(card);
   } catch (err) {
     handleError(err, res);
   }

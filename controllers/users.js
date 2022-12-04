@@ -3,17 +3,10 @@ const { handleError } = require('../errors/handleError');
 
 // получение всех пользователей
 const getAllUsers = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('getAllUsers');
   try {
     const users = await User.find({});
-    if (users.length === 0) {
-      const err = new Error('Ошибка 404. Пользователи не найдены');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
-    }
-    res.status(200).send(users);
+    res.send(users);
   } catch (err) {
     handleError(err, res);
   }
@@ -21,15 +14,8 @@ const getAllUsers = async (req, res) => {
 
 // получение пользователя по id
 const getUser = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('getUser');
   const { userId } = req.params;
-  if (userId.length !== 24) {
-    const err = new Error('');
-    err.name = 'BadRequestError';
-    handleError(err, res);
-    return;
-  }
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -38,7 +24,7 @@ const getUser = async (req, res) => {
       handleError(err, res);
       return;
     }
-    res.status(200).send(user);
+    res.send(user);
   } catch (err) {
     handleError(err, res);
   }
@@ -46,7 +32,6 @@ const getUser = async (req, res) => {
 
 // создание пользователя
 const createUser = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('createUser');
   const { name, about, avatar } = req.body;
   try {
@@ -59,7 +44,6 @@ const createUser = async (req, res) => {
 
 // обновление данных пользователя
 const updateUser = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('updateUser');
   const { name, about } = req.body;
   const ownerId = req.user._id;
@@ -72,7 +56,7 @@ const updateUser = async (req, res) => {
         runValidators: true,
       },
     );
-    res.status(200).send(user);
+    res.send(user);
   } catch (err) {
     handleError(err, res);
   }
@@ -80,20 +64,19 @@ const updateUser = async (req, res) => {
 
 // обновление аватара пользователя
 const updateAvatar = async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log('updateAvatar');
-  const avatar = req.body;
+  const { avatar } = req.body;
   const ownerId = req.user._id;
   try {
     const user = await User.findByIdAndUpdate(
       ownerId,
-      avatar,
+      { avatar },
       {
         new: true,
         runValidators: true,
       },
     );
-    res.status(200).send(user);
+    res.send(user);
   } catch (err) {
     handleError(err, res);
   }

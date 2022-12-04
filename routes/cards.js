@@ -8,14 +8,14 @@ const {
   deleteLike,
 } = require('../controllers/cards');
 
-router.get('/cards', getAllCards);
+router.get('/', getAllCards);
 
-router.post('/cards', createCard);
+router.post('/', createCard);
 
-router.delete('/cards/:cardId', deleteCard);
+router.delete('/:cardId', deleteCard);
 
-router.put('/cards/:cardId/likes', likeCard);
+router.put('/:cardId/likes', likeCard);
 
-router.delete('/cards/:cardId/likes', deleteLike);
+router.delete('/:cardId/likes', deleteLike);
 
 module.exports = router;

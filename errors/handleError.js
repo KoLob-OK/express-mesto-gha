@@ -19,6 +19,11 @@ const handleError = (err, res) => {
       .status(statusCode.badRequest)
       .send({ message: `Ошибка ${statusCode.badRequest}. Введены некорректные данные` });
   }
+  if (err.name === 'UnauthorizedError') {
+    return res
+      .status(statusCode.unauthorized)
+      .send({ message: `Ошибка ${statusCode.unauthorized}. Неправильные почта или пароль` });
+  }
   if (err.name === 'NotFoundError') {
     return res
       .status(statusCode.notFound)

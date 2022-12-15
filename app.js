@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const users = require('./routes/users');
 const cards = require('./routes/cards');
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 
@@ -34,7 +35,7 @@ mongoose
     useNewUrlParser: true,
   })
   .then(() => {
-    console.log(`Connected to MongoDB!`);
+    console.log('Connected to MongoDB!');
   })
   .catch(() => {
     console.log('Database connection error');

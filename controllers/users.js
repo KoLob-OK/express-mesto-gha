@@ -41,6 +41,24 @@ const getUser = async (req, res) => {
   }
 };
 
+// получение инфо о текущем пользователе
+const getCurrentUser = async (req, res) => {
+  console.log('getCurrentUser');
+  const { userId } = req.user._id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      const err = new Error('Ошибка 404. Пользователь не найден');
+      err.name = 'NotFoundError';
+      handleError(err, res);
+      return;
+    }
+    res.status(statusCode.ok).send(user);
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
 // создание пользователя
 const createUser = async (req, res) => {
   console.log('createUser');
@@ -151,6 +169,7 @@ const updateAvatar = async (req, res) => {
 module.exports = {
   getAllUsers,
   getUser,
+  getCurrentUser,
   createUser,
   login,
   updateUser,

@@ -5,6 +5,7 @@ const statusCode = {
   unauthorized: 401,
   forbidden: 403,
   notFound: 404,
+  conflict: 409,
   internalServerError: 500,
 };
 
@@ -24,9 +25,19 @@ const handleError = (err, res) => {
       .status(statusCode.unauthorized)
       .send({ message: `Ошибка ${statusCode.unauthorized}. Неправильные почта или пароль` });
   }
+  if (err.name === 'ForbiddenError') {
+    return res
+      .status(statusCode.forbidden)
+      .send({ message: `Ошибка ${statusCode.forbidden}. Недостаточно прав. Доступ запрещен` });
+  }
   if (err.name === 'NotFoundError') {
     return res
       .status(statusCode.notFound)
+      .send({ message: err.message });
+  }
+  if (err.name === 'ConflictError') {
+    return res
+      .status(statusCode.conflict)
       .send({ message: err.message });
   }
 

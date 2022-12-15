@@ -35,9 +35,10 @@ const createCard = async (req, res) => {
 const deleteCard = async (req, res) => {
   console.log('deleteCard');
   const { cardId } = req.params;
+  const { userId } = req.user._id;
   try {
     const card = await Card
-      .findByIdAndRemove(cardId)
+      .findById(cardId)
       .populate('owner');
     if (!card) {
       const err = new Error('Ошибка 404. Карточка не найдена');
@@ -45,6 +46,14 @@ const deleteCard = async (req, res) => {
       handleError(err, res);
       return;
     }
+    const ownerId = card.owner.id;
+    if (ownerId !== userId) {
+      const err = new Error('Ошибка 403. Удаление чужой карточки запрещено');
+      err.name = 'ForbiddenError';
+      handleError(err, res);
+      return;
+    }
+    await Card.findByIdAndRemove(cardId);
     res.status(statusCode.ok).send(card);
   } catch (err) {
     handleError(err, res);

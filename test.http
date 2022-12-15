@@ -39,3 +39,30 @@ Content-Type: application/json
 }
 
 ###
+
+// удалить карточку (ID)
+DELETE http://localhost:3000/cards/639ad50dcd329551c3b18647
+Content-Type: application/json
+
+###
+
+// изменить аватар пользователя (link)
+PATCH http://localhost:3000/users/me/avatar
+Content-Type: application/json
+
+{
+  "avatar": "https://avatars.dzeninfra.ru/get-zen_doc/1595998/pub_5fe906cfe5cdbc6a96154adf_5fe9fd003ede826fd44bdbb3"
+}
+
+###
+
+// изменить пользователя (name, about)
+PATCH http://localhost:3000/users/me
+Content-Type: application/json
+
+{
+  "name": "Kolob",
+  "about": "Чудо"
+}
+
+###

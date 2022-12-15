@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+
 require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
@@ -28,10 +30,10 @@ app.use((req, res, next) => {
 // роуты, не требующие авторизации (регистрация и логин)
 app.post('/signin', login);
 app.post('/signup', createUser);
-// роуты пользователей
-app.use('/users', usersRouter);
-// роуты карточек
-app.use('/cards', cardsRouter);
+// роуты, которым авторизация нужна
+app.use('/users', auth, usersRouter);
+app.use('/cards', auth, cardsRouter);
+
 app.use((req, res) => res
   .status(statusCode.notFound)
   .send({ message: 'Ошибка 404. Введен некорректный адрес' }));

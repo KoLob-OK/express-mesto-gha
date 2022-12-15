@@ -18,15 +18,6 @@ const statusCode = {
 
 app.use(express.json());
 
-// временное решение авторизации
-app.use((req, res, next) => {
-  req.user = {
-    _id: '638cb09f606b39b6002ad781',
-  };
-
-  next();
-});
-
 // роуты, не требующие авторизации (регистрация и логин)
 app.post('/signin', login);
 app.post('/signup', createUser);

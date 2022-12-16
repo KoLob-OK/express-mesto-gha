@@ -11,13 +11,13 @@ Accept: application/json
 ###
 
 // получить все карточки
-GET http://localhost:3000/cards
+GET http://localhost:3000/cards/638cb09f606b39b6002ad781
 Accept: application/json
 
 ###
 
 // создать нового пользователя (email, password, name, about, avatar)
-POST http://localhost:3000/users
+POST http://localhost:3000/signup
 Content-Type: application/json
 
 {
@@ -25,6 +25,17 @@ Content-Type: application/json
   "password": "11111111",
   "about": "Чудо-юдо-new",
   "avatar": "https://avatars.dzeninfra.ru/get-zen_doc/1595998/pub_5fe906cfe5cdbc6a96154adf_5fe9fd003ede826fd44bdbb3"
+}
+
+###
+
+// логин пользователя (email, password)
+POST http://localhost:3000/signin
+Content-Type: application/json
+
+{
+  "email": "test@test.ru",
+  "password": "11111111"
 }
 
 ###
@@ -41,7 +52,7 @@ Content-Type: application/json
 ###
 
 // удалить карточку (ID)
-DELETE http://localhost:3000/cards/639ad50dcd329551c3b18647
+DELETE http://localhost:3000/cards/638cb67d6afbd94b3a2e0175
 Content-Type: application/json
 
 ###

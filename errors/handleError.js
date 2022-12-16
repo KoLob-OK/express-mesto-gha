@@ -48,4 +48,5 @@ const handleError = (err, res) => {
 
 module.exports = {
   handleError,
+  statusCode,
 };

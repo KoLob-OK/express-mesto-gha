@@ -100,18 +100,11 @@ const createUser = async (req, res) => {
 };
 
 // аутентификация пользователя
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   console.log('login');
   const { email, password } = req.body;
   try {
     const user = await User.findUserByCredentials(email, password);
-    // проверяем, найден ли в базе пользователь с переданными данными
-    if (!user) {
-      const err = new Error('Ошибка 401. Неправильные почта или пароль');
-      err.name = 'UnauthorizedError';
-      handleError(err, res);
-      return;
-    }
 
     // если найден, создаем токен
     const token = jwt.sign(
@@ -129,7 +122,7 @@ const login = async (req, res) => {
       // если у ответа нет тела, то используем метод end
       .end();
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 

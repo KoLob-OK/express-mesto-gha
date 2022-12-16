@@ -65,8 +65,21 @@ const createUser = async (req, res) => {
   const {
     email, password, name, about, avatar,
   } = req.body;
+  if (!email || !password) {
+    const err = new Error('Ошибка 400. Неправильные почта или пароль');
+    err.name = 'ValidationError';
+    handleError(err, res);
+    return;
+  }
   try {
     const passHash = await bcrypt.hash(password, 10);
+    const checkUserDuplication = await User.findOne({ email });
+    if (checkUserDuplication) {
+      const err = new Error(`Ошибка 409. Пользователь ${email} уже существует`);
+      err.name = 'ConflictError';
+      handleError(err, res);
+      return;
+    }
     const user = await User.create({
       email,
       password: passHash,

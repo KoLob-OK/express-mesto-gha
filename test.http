@@ -21,7 +21,7 @@ POST http://localhost:3000/signup
 Content-Type: application/json
 
 {
-  "email": "test@test.ru",
+  "email": "test5@test.ru",
   "password": "11111111",
   "about": "Чудо-юдо-new",
   "avatar": "https://avatars.dzeninfra.ru/get-zen_doc/1595998/pub_5fe906cfe5cdbc6a96154adf_5fe9fd003ede826fd44bdbb3"

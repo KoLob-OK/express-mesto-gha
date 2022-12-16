@@ -87,7 +87,13 @@ const createUser = async (req, res) => {
       about,
       avatar,
     });
-    res.status(statusCode.created).send({ _id: user._id });
+    res.status(statusCode.created).send({
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+    });
   } catch (err) {
     handleError(err, res);
   }

@@ -45,7 +45,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       // не нашёлся — отклоняем промис
       if (!user) {
-        throw new AuthError('Неправильные почта или пароль');
+        return Promise.reject(new AuthError('Неправильные почта или пароль'));
       }
 
       // нашёлся — сравниваем хеши
@@ -53,7 +53,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
         .then((matched) => {
           if (!matched) {
             // не совпали - отклоняем промис
-            throw new AuthError('Неправильные почта или пароль');
+            return Promise.reject(new AuthError('Неправильные почта или пароль'));
           }
           // совпали - возвращаем пользователя
           return user;

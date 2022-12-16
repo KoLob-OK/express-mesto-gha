@@ -34,7 +34,7 @@ POST http://localhost:3000/signin
 Content-Type: application/json
 
 {
-  "email": "test9@test.ru",
+  "email": "test7@test.ru",
   "password": "11111111"
 }
 

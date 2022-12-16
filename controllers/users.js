@@ -100,7 +100,7 @@ const createUser = async (req, res) => {
 };
 
 // аутентификация пользователя
-const login = async (req, res, next) => {
+const login = async (req, res) => {
   console.log('login');
   const { email, password } = req.body;
   try {
@@ -122,7 +122,8 @@ const login = async (req, res, next) => {
       // если у ответа нет тела, то используем метод end
       .end();
   } catch (err) {
-    next(err);
+    err.name = 'UnauthorizedError';
+    handleError(err, res);
   }
 };
 

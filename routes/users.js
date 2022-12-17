@@ -14,14 +14,14 @@ const regexUrl = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:/
 
 router.get('/', getAllUsers);
 
+router.get('/me', getCurrentUser);
+
 router.get('/:userId', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
     userId: Joi.string().hex().required().length(24),
   }),
 }), getUser);
-
-router.get('/me', getCurrentUser);
 
 router.patch('/me', celebrate({
   // валидируем тело запроса

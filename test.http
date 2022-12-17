@@ -1,22 +1,22 @@
-// получить всех пользователей
+// 1. получить всех пользователей
 GET http://localhost:3000/users
 Accept: application/json
 
 ###
 
-// получить пользователя
+// 2. получить пользователя по Id
 GET http://localhost:3000/users/638cb09f606b39b6002ad781
 Accept: application/json
 
 ###
 
-// получить все карточки
+// 3. получить все карточки
 GET http://localhost:3000/cards/638cb09f606b39b6002ad781
 Accept: application/json
 
 ###
 
-// создать нового пользователя (email, password, name, about, avatar)
+// 4. создать нового пользователя (email, password, name, about, avatar)
 POST http://localhost:3000/signup
 Content-Type: application/json
 
@@ -29,7 +29,7 @@ Content-Type: application/json
 
 ###
 
-// логин пользователя (email, password)
+// 5. логин пользователя (email, password)
 POST http://localhost:3000/signin
 Content-Type: application/json
 
@@ -40,7 +40,7 @@ Content-Type: application/json
 
 ###
 
-// создать новую карточку (name, link)
+// 6. создать новую карточку (name, link)
 POST http://localhost:3000/cards
 Content-Type: application/json
 
@@ -51,13 +51,13 @@ Content-Type: application/json
 
 ###
 
-// удалить карточку (ID)
+// 7. удалить карточку (ID)
 DELETE http://localhost:3000/cards/638cb67d6afbd94b3a2e0175
 Content-Type: application/json
 
 ###
 
-// изменить аватар пользователя (link)
+// 8. изменить аватар пользователя (link)
 PATCH http://localhost:3000/users/me/avatar
 Content-Type: application/json
 
@@ -67,7 +67,7 @@ Content-Type: application/json
 
 ###
 
-// изменить пользователя (name, about)
+// 9. изменить пользователя (name, about)
 PATCH http://localhost:3000/users/me
 Content-Type: application/json
 
@@ -75,5 +75,11 @@ Content-Type: application/json
   "name": "Kolob",
   "about": "Чудо"
 }
+
+###
+
+// 10. получить информацию о пользователе
+GET http://localhost:3000/users/me
+Content-Type: application/json
 
 ###

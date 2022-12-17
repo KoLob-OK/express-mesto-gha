@@ -68,6 +68,7 @@ const login = async (req, res) => {
 
     // вернём токен, браузер сохранит его в куках
     res
+    // КУКИ ПРОВАЛИВАЮТ ТЕСТЫ НА ГИТХАБЕ!!!
     /* .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,

@@ -68,11 +68,11 @@ const login = async (req, res) => {
 
     // вернём токен, браузер сохранит его в куках
     res
-      .cookie('jwt', token, {
+    /* .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-      })
-      .send({ message: 'Успешный вход' });
+      }) */
+      .send({ token, message: 'Успешный вход' });
     console.log(token);
   } catch (err) {
     err.name = 'UnauthorizedError';
@@ -114,7 +114,7 @@ const getAllUsers = async (req, res) => {
 const getUser = async (req, res) => {
   console.log('getUser');
   const { userId } = req.params;
-  console.log({ userId } );
+  console.log({ userId });
   try {
     const user = await User.findById(userId);
     if (!user) {

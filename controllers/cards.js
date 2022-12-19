@@ -43,7 +43,7 @@ const deleteCard = async (req, res) => {
       .orFail(new NotFoundError('Ошибка 404. Карточка не найдена'))
       .populate('owner');
 
-    const ownerId = card.owner.id.toString();
+    const ownerId = card.owner._id.toString();
     if (ownerId === userId) {
       await Card.findByIdAndRemove(cardId);
       res.status(statusCode.ok).send(card);

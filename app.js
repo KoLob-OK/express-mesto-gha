@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { celebrate, errors, Joi } = require('celebrate');
 
 const usersRouter = require('./routes/users');
@@ -19,6 +21,15 @@ const statusCode = {
 
 const regexUrl = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+)/;
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+app.use(limiter);
+app.use(helmet());
 app.use(express.json());
 
 // роуты, не требующие авторизации (регистрация и логин)

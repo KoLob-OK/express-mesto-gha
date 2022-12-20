@@ -40,7 +40,7 @@ const deleteCard = async (req, res) => {
   try {
     const card = await Card
       .findById(cardId)
-      .orFail(new NotFoundError('Ошибка 404. Карточка не найдена'))
+      .orFail(new NotFoundError('Ошибка 404. Карточка не найдена')) // ниже не стал реализовывать, т.к. тест на Гитхабе крашится, не выдавая при этом пояснение вылета (Постман прекрасно всё обрабатывает, в консоли ошибок также не наблюдаю)
       .populate('owner');
 
     // const ownerId = card.owner._id.toString();

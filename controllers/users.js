@@ -20,12 +20,12 @@ const createUser = async (req, res, next) => {
       email, password, name, about, avatar,
     } = req.body;
     if (!email || !password) {
-      throw new ErrorHandler(400, 'Ошибка 400. Неправильные почта или пароль');
+      next(new ErrorHandler(400, 'Ошибка 400. Неправильные почта или пароль'));
     }
     const passHash = await bcrypt.hash(password, 10);
     const checkUserDuplication = await User.findOne({ email });
     if (checkUserDuplication) {
-      throw new ErrorHandler(409, `Ошибка 409. Пользователь ${email} уже существует`);
+      next(new ErrorHandler(409, `Ошибка 409. Пользователь ${email} уже существует`));
     }
     const user = await User.create({
       email,
@@ -43,6 +43,9 @@ const createUser = async (req, res, next) => {
     });
     next();
   } catch (err) {
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
+      next(new ErrorHandler(400, 'Ошибка 400. Неверные данные'));
+    }
     next(err);
   }
 };

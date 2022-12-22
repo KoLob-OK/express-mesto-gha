@@ -8,7 +8,7 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const { ErrorHandler } = require('./errors/handleError');
+const { ErrorHandler, handleError } = require('./errors/handleError');
 
 require('dotenv').config();
 
@@ -68,6 +68,11 @@ mongoose
   .catch(() => {
     console.log('Database connection error');
   });
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  handleError(err, res);
+});
 
 app.listen(PORT, () => {
   console.log(`App  listening on port ${PORT}`);

@@ -22,11 +22,11 @@ const createUser = async (req, res, next) => {
     if (!email || !password) {
       next(new ErrorHandler(400, 'Ошибка 400. Неправильные почта или пароль'));
     }
-    const passHash = await bcrypt.hash(password, 10);
     const checkUserDuplication = await User.findOne({ email });
     if (checkUserDuplication) {
       next(new ErrorHandler(409, `Ошибка 409. Пользователь ${email} уже существует`));
     }
+    const passHash = await bcrypt.hash(password, 10);
     const user = await User.create({
       email,
       password: passHash,
@@ -41,7 +41,7 @@ const createUser = async (req, res, next) => {
       about: user.about,
       avatar: user.avatar,
     });
-    next();
+    // next();
   } catch (err) {
     if (err.name === 'CastError' || err.name === 'ValidationError') {
       next(new ErrorHandler(400, 'Ошибка 400. Неверные данные'));
@@ -86,7 +86,7 @@ const getCurrentUser = async (req, res, next) => {
   try {
     const user = await User.findById(_id);
     if (!user) {
-      throw new ErrorHandler(404, 'Ошибка 404. Пользователь не найден');
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {
@@ -113,7 +113,7 @@ const getUser = async (req, res, next) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      throw new ErrorHandler(404, 'Ошибка 404. Пользователь не найден');
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {
@@ -136,7 +136,7 @@ const updateUser = async (req, res, next) => {
       },
     );
     if (!user) {
-      throw new ErrorHandler(404, 'Ошибка 404. Пользователь не найден');
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {
@@ -159,7 +159,7 @@ const updateAvatar = async (req, res, next) => {
       },
     );
     if (!user) {
-      throw new ErrorHandler(404, 'Ошибка 404. Пользователь не найден');
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {

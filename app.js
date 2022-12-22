@@ -8,16 +8,13 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { handleError, ErrorHandler } = require('./errors/handleError');
 
 require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
-
-const statusCode = {
-  notFound: 404,
-};
 
 const regexUrl = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+)/;
 
@@ -54,9 +51,10 @@ app.post('/signup', celebrate({
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
 
-app.use((req, res) => res
-  .status(statusCode.notFound)
-  .send({ message: 'Ошибка 404. Введен некорректный адрес' }));
+// запрос к ошибочному роуту
+app.use('*', (req, res, next) => {
+  next(new ErrorHandler(404, 'Ошибка 404. Введен некорректный адрес'));
+});
 
 app.use(errors());
 
@@ -70,6 +68,10 @@ mongoose
   .catch(() => {
     console.log('Database connection error');
   });
+
+app.use((err, req, res, next) => {
+  handleError(err, res);
+});
 
 app.listen(PORT, () => {
   console.log(`App  listening on port ${PORT}`);

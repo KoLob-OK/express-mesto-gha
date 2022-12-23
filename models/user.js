@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
-const AuthError = require('../errors/auth-err');
+const { ErrorHandler } = require('../errors/handleError');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
-    select: false, // необходимо добавить поле select
+    select: false,
   },
   name: {
     type: String,
@@ -49,7 +49,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       // не нашёлся — отклоняем промис
       if (!user) {
-        return Promise.reject(new AuthError('Неправильные почта или пароль'));
+        return Promise.reject(new ErrorHandler(401, 'Неправильные почта или пароль'));
       }
 
       // нашёлся — сравниваем хеши
@@ -57,7 +57,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
         .then((matched) => {
           if (!matched) {
             // не совпали - отклоняем промис
-            return Promise.reject(new AuthError('Неправильные почта или пароль'));
+            return Promise.reject(new ErrorHandler(401, 'Неправильные почта или пароль'));
           }
           // совпали - возвращаем пользователя
           return user;

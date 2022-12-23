@@ -1,6 +1,6 @@
 const Card = require('../models/card');
-const { handleError } = require('../errors/handleError');
-// const NotFoundError = require('../errors/not-found-err');
+
+const { ErrorHandler } = require('../errors/handleError');
 
 const statusCode = {
   ok: 200,
@@ -8,18 +8,18 @@ const statusCode = {
 };
 
 // получение всех карточек
-const getAllCards = async (req, res) => {
+const getAllCards = async (req, res, next) => {
   console.log('getAllCards');
   try {
     const cards = await Card.find({}).populate('owner');
     res.status(statusCode.ok).send(cards);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 
 // создание карточки
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   console.log('createCard');
   const { name, link } = req.body;
   try {
@@ -28,67 +28,36 @@ const createCard = async (req, res) => {
     console.log(card);
     res.status(statusCode.created).send(card);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 
 // удаление карточки
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   console.log('deleteCard');
-  const { cardId } = req.params;
-  const userId = req.user._id;
   try {
+    const { cardId } = req.params;
+    const userId = req.user._id;
     const card = await Card
       .findById(cardId)
       .populate('owner');
     if (!card) {
-      const err = new Error('Ошибка 404. Карточка не найдена');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
     }
     const ownerId = card.owner._id.toString();
     if (ownerId !== userId) {
-      const err = new Error('Ошибка 403. Удаление чужой карточки запрещено');
-      err.name = 'ForbiddenError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(403, 'Ошибка 403. Удаление чужой карточки запрещено'));
     }
     await Card.findByIdAndRemove(cardId);
     res.status(statusCode.ok).send(card);
   } catch (err) {
-    err.name = 'ForbiddenError';
-    handleError(err, res);
+    // err.name = 'ForbiddenError';
+    next(err);
   }
 };
-/* const deleteCard = async (req, res) => {
-  console.log('deleteCard');
-  const { cardId } = req.params;
-  const userId = req.user._id;
-  try {
-    const card = await Card
-      .findById(cardId)
-      .orFail(new NotFoundError('Ошибка 404. Карточка не найдена'))
-      .populate('owner');
-
-    const ownerId = card.owner.id.toString();
-    if (ownerId === userId) {
-      await Card.findByIdAndRemove(cardId);
-      res.status(statusCode.ok).send(card);
-    }
-  } catch (err) {
-    if (err.message === 'Ошибка 404. Карточка не найдена') {
-      err.name = 'NotFoundError';
-      handleError(err, res);
-    } else {
-      err.name = 'ForbiddenError';
-      handleError(err, res);
-    }
-  }
-}; */
 
 // лайк карточки
-const likeCard = async (req, res) => {
+const likeCard = async (req, res, next) => {
   console.log('likeCard');
   const { cardId } = req.params;
   const ownerId = req.user._id;
@@ -101,23 +70,20 @@ const likeCard = async (req, res) => {
       )
       .populate(['owner', 'likes']);
     if (!card) {
-      const err = new Error('Ошибка 404. Карточка не найдена');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
     }
     res.status(statusCode.ok).send(card);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 
 // удаление лайка карточки
-const deleteLike = async (req, res) => {
+const deleteLike = async (req, res, next) => {
   console.log('deleteLike');
-  const { cardId } = req.params;
-  const ownerId = req.user._id;
   try {
+    const { cardId } = req.params;
+    const ownerId = req.user._id;
     const card = await Card
       .findByIdAndUpdate(
         cardId,
@@ -126,14 +92,12 @@ const deleteLike = async (req, res) => {
       )
       .populate(['owner', 'likes']);
     if (!card) {
-      const err = new Error('Ошибка 404. Карточка не найдена');
-      err.name = 'NotFoundError';
-      handleError(err, res);
+      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
       return;
     }
     res.status(statusCode.ok).send(card);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 

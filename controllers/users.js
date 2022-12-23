@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
-const { handleError } = require('../errors/handleError');
+const { ErrorHandler } = require('../errors/handleError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 console.log(process.env.NODE_ENV);
@@ -13,26 +13,20 @@ const statusCode = {
 };
 
 // создание пользователя
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   console.log('createUser');
-  const {
-    email, password, name, about, avatar,
-  } = req.body;
-  if (!email || !password) {
-    const err = new Error('Ошибка 400. Неправильные почта или пароль');
-    err.name = 'ValidationError';
-    handleError(err, res);
-    return;
-  }
   try {
-    const passHash = await bcrypt.hash(password, 10);
+    const {
+      email, password, name, about, avatar,
+    } = req.body;
+    if (!email || !password) {
+      next(new ErrorHandler(400, 'Ошибка 400. Неправильные почта или пароль'));
+    }
     const checkUserDuplication = await User.findOne({ email });
     if (checkUserDuplication) {
-      const err = new Error(`Ошибка 409. Пользователь ${email} уже существует`);
-      err.name = 'ConflictError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(409, `Ошибка 409. Пользователь ${email} уже существует`));
     }
+    const passHash = await bcrypt.hash(password, 10);
     const user = await User.create({
       email,
       password: passHash,
@@ -47,13 +41,17 @@ const createUser = async (req, res) => {
       about: user.about,
       avatar: user.avatar,
     });
+    // next();
   } catch (err) {
-    handleError(err, res);
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
+      next(new ErrorHandler(400, 'Ошибка 400. Неверные данные'));
+    }
+    next(err);
   }
 };
 
 // аутентификация пользователя
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   console.log('login');
   const { email, password } = req.body;
   try {
@@ -76,62 +74,55 @@ const login = async (req, res) => {
       .send({ token, message: 'Успешный вход' });
     console.log(token);
   } catch (err) {
-    err.name = 'UnauthorizedError';
-    handleError(err, res);
+    next(err);
   }
 };
 
 // получение инфо о текущем пользователе
-const getCurrentUser = async (req, res) => {
+const getCurrentUser = async (req, res, next) => {
   console.log('getCurrentUser');
   const { _id } = req.user;
   console.log({ _id });
   try {
     const user = await User.findById(_id);
     if (!user) {
-      const err = new Error('Ошибка 404. Пользователь не найден');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 
 // получение всех пользователей
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
   console.log('getAllUsers');
   try {
     const users = await User.find({});
     res.status(statusCode.ok).send(users);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 
 // получение пользователя по id
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   console.log('getUser');
   const { userId } = req.params;
   console.log({ userId });
   try {
     const user = await User.findById(userId);
     if (!user) {
-      const err = new Error('Ошибка 404. Пользователь не найден');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 
 // обновление данных пользователя
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   console.log('updateUser');
   const { name, about } = req.body;
   const ownerId = req.user._id;
@@ -145,19 +136,16 @@ const updateUser = async (req, res) => {
       },
     );
     if (!user) {
-      const err = new Error('Ошибка 404. Пользователь не найден');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 
 // обновление аватара пользователя
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   console.log('updateAvatar');
   const { avatar } = req.body;
   const ownerId = req.user._id;
@@ -171,14 +159,11 @@ const updateAvatar = async (req, res) => {
       },
     );
     if (!user) {
-      const err = new Error('Ошибка 404. Пользователь не найден');
-      err.name = 'NotFoundError';
-      handleError(err, res);
-      return;
+      next(new ErrorHandler(404, 'Ошибка 404. Пользователь не найден'));
     }
     res.status(statusCode.ok).send(user);
   } catch (err) {
-    handleError(err, res);
+    next(err);
   }
 };
 

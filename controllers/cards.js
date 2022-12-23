@@ -42,11 +42,11 @@ const deleteCard = async (req, res, next) => {
       .findById(cardId)
       .populate('owner');
     if (!card) {
-      throw new ErrorHandler(404, 'Ошибка 404. Карточка не найдена');
+      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
     }
     const ownerId = card.owner._id.toString();
     if (ownerId !== userId) {
-      throw new ErrorHandler(403, 'Ошибка 403. Удаление чужой карточки запрещено');
+      next(new ErrorHandler(403, 'Ошибка 403. Удаление чужой карточки запрещено'));
     }
     await Card.findByIdAndRemove(cardId);
     res.status(statusCode.ok).send(card);
@@ -70,7 +70,7 @@ const likeCard = async (req, res, next) => {
       )
       .populate(['owner', 'likes']);
     if (!card) {
-      throw new ErrorHandler(404, 'Ошибка 404. Карточка не найдена');
+      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
     }
     res.status(statusCode.ok).send(card);
   } catch (err) {
@@ -92,7 +92,7 @@ const deleteLike = async (req, res, next) => {
       )
       .populate(['owner', 'likes']);
     if (!card) {
-      throw new ErrorHandler(404, 'Ошибка 404. Карточка не найдена');
+      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
     }
     res.status(statusCode.ok).send(card);
   } catch (err) {

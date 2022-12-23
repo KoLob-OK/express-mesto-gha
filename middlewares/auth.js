@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
   console.log({ authorization });
   // убеждаемся, что он есть или начинается с Bearer
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new ErrorHandler(401, 'Ошибка 401. Необходима авторизация');
+    next(new ErrorHandler(401, 'Ошибка 401. Необходима авторизация'));
   }
 
   // если токен на месте, то извлечём его

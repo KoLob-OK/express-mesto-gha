@@ -40,10 +40,8 @@ const deleteCard = async (req, res, next) => {
     const userId = req.user._id;
     const card = await Card
       .findById(cardId)
+      .orFail(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'))
       .populate('owner');
-    if (!card) {
-      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
-    }
     const ownerId = card.owner._id.toString();
     if (ownerId !== userId) {
       next(new ErrorHandler(403, 'Ошибка 403. Удаление чужой карточки запрещено'));

@@ -68,10 +68,8 @@ const likeCard = async (req, res, next) => {
         { $addToSet: { likes: ownerId } }, // добавить _id в массив, если его там нет
         { new: true },
       )
+      .orFail(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'))
       .populate(['owner', 'likes']);
-    if (!card) {
-      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
-    }
     res.status(statusCode.ok).send(card);
   } catch (err) {
     next(err);
@@ -90,11 +88,8 @@ const deleteLike = async (req, res, next) => {
         { $pull: { likes: ownerId } }, // убрать _id из массива
         { new: true },
       )
+      .orFail(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'))
       .populate(['owner', 'likes']);
-    if (!card) {
-      next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
-      return;
-    }
     res.status(statusCode.ok).send(card);
   } catch (err) {
     next(err);

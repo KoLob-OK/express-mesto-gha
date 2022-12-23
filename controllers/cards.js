@@ -93,6 +93,7 @@ const deleteLike = async (req, res, next) => {
       .populate(['owner', 'likes']);
     if (!card) {
       next(new ErrorHandler(404, 'Ошибка 404. Карточка не найдена'));
+      return;
     }
     res.status(statusCode.ok).send(card);
   } catch (err) {

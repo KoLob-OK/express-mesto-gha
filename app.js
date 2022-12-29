@@ -9,6 +9,7 @@ const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { ErrorHandler, handleError } = require('./errors/handleError');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 require('dotenv').config();
 
@@ -28,6 +29,7 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 app.use(express.json());
+app.use(requestLogger); // подключаем логгер запросов
 
 // роуты, не требующие авторизации (регистрация и логин)
 app.post('/signin', celebrate({
@@ -55,6 +57,8 @@ app.use('/cards', auth, cardsRouter);
 app.use('*', (req, res, next) => {
   next(new ErrorHandler(404, 'Ошибка 404. Введен некорректный адрес'));
 });
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors());
 

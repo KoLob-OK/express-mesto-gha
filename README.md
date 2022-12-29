@@ -1,7 +1,7 @@
 [![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
 ### 13-14 практические проекты обучения студентов от Яндекс.Практикум (6 курс).
 
-# Проект Mesto фронтенд + бэкенд
+# Проект Mesto (бэкенд)
 
 ## Используемые технологии:
 

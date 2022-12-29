@@ -32,3 +32,4 @@ dist
 .idea
 
 .env
+*.log
